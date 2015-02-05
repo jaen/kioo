@@ -1,7 +1,9 @@
-(defproject kioo "0.4.1-SNAPSHOT"
+(defproject org.clojars.jaen/kioo "0.4.1-SNAPSHOT"
   :description "enlive/enfocus style templating for Facebook's React."
-  :url "http://github.com/ckirkendall/kioo"
+  :url "http://github.com/jaen/kioo"
   :author "Creighton Kirkendall"
+  :signing {:gpg-key "jaennirin@gmail.com"}
+  :deploy-repositories [["clojars" {:creds :gpg}]]
   :min-lein-version "2.0.0"
   :lein-release {:deploy-via :clojars}
   :license {:name "Eclipse Public License"
