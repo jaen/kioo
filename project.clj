@@ -7,43 +7,41 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[enlive "1.1.5"]
-                 [com.facebook/react "0.11.1"]
+                 ; [com.facebook/react "0.11.1"]
                  [org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-2280"]
+                 [org.clojure/clojurescript "0.0-2760"]
                  [com.googlecode.htmlcompressor/htmlcompressor "1.5.2"]
                  [sablono "0.2.20"]
                  [hickory "0.5.3"]
                  [om "0.7.1"]
                  [reagent "0.4.2"]
                  [enlive-ws  "0.1.1"]]
-  :plugins [[lein-cljsbuild "1.0.4-SNAPSHOT"]]
-  :cljsbuild {:builds []}
-  :profiles {:dev {:plugins [[com.keminglabs/cljx "0.3.2"] ;; Must be before Austin: https://github.com/cemerick/austin/issues/37
-                             [com.cemerick/austin "0.1.3"]
+  :auto-clean false
+  :plugins [[lein-cljsbuild "1.0.4"]]
+  :prep-tasks [["cljx" "once"]]
+  :resource-paths ["src/cljs" "target/generated/src/cljs"]
+  :source-paths ["src/clj" "target/generated/src/clj"]
+  :test-paths ["test" "target/generated/test"]
+  :hooks [leiningen.cljsbuild]
+  :profiles {:dev {:plugins [[com.keminglabs/cljx "0.5.0" :exclusions [org.clojure/clojure]] ;; Must be before Austin: https://github.com/cemerick/austin/issues/37
+                             [com.cemerick/austin "0.1.7-SNAPSHOT"]
                              [com.cemerick/clojurescript.test "0.3.2-SNAPSHOT"]
-                             [lein-cljsbuild "1.0.4-SNAPSHOT"]
+                             [lein-cljsbuild "1.0.4"]
                              [lein-ancient "0.5.4"]]
-                   :hooks [cljx.hooks leiningen.cljsbuild]
-                   :cljx {:builds [{:source-paths ["src"]
-                                    :output-path "target/classes"
+                   :resource-paths ["test-resources"]
+                   :cljx {:builds [{:source-paths ["src/cljx"]
+                                    :output-path "target/generated/src/clj"
                                     :rules :clj}
-                                   {:source-paths ["src"]
-                                    :output-path "target/classes"
+                                   {:source-paths ["src/cljx"]
+                                    :output-path "target/generated/src/cljs"
                                     :rules :cljs}
-                                   {:source-paths ["test"]
-                                    :output-path "target/test-classes"
+                                   {:source-paths ["src/cljx"]
+                                    :output-path "target/generated/test/clj"
                                     :rules :clj}
-                                   {:source-paths ["test"]
-                                    :output-path "target/test-classes"
+                                   {:source-paths ["src/cljx"]
+                                    :output-path "target/generated/test/cljs"
                                     :rules :cljs}]}
-                   :cljsbuild {:builds [#_{:id "dev"
-                                         :source-paths ["test" "target/classes" "target/test-classes"]
-                                         :compiler {:output-to "target/dev/kioo.js"
-                                                    :optimizations :none
-                                                    :pretty-print true
-                                                    :source-map true}}
-                                        {:id "test"
-                                         :source-paths ["test" "target/classes" "target/test-classes"]
+                   :cljsbuild {:builds [{:source-paths ["src" "test" "target/generated/src/cljs" "target/generated/test/cljs"]
                                          :compiler {:output-to "target/test/kioo.js"
                                                     :optimizations :simple
                                                     :pretty-print true
@@ -51,7 +49,4 @@
                                                                "react/react.js"]
                                                     :externs ["react/externs/react.js"]}}]
                                :test-commands {"phantom" ["phantomjs" :runner "target/test/kioo.js"]}}
-                   :repl-options {:nrepl-middleware [cljx.repl-middleware/wrap-cljx]}
-                   :resource-paths ["test-resources"]
-                   :source-paths ["target/classes"]
-                   :test-paths ["test" "target/test-classes"]}})
+                   :repl-options {:nrepl-middleware [cljx.repl-middleware/wrap-cljx]}}})
