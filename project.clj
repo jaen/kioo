@@ -21,11 +21,12 @@
   :auto-clean false
   :plugins [[lein-cljsbuild "1.0.4"]]
   :prep-tasks [["cljx" "once"]]
-  :resource-paths ["src/cljs" "target/generated/src/cljs"]
+  :resource-paths ["src/cljs" "target/generated/src/cljs" "test-resources"] ; tmp
   :source-paths ["src/clj" "target/generated/src/clj"]
   :test-paths ["test" "target/generated/test"]
   :hooks [leiningen.cljsbuild]
-  :profiles {:dev {:plugins [[com.keminglabs/cljx "0.5.0" :exclusions [org.clojure/clojure]] ;; Must be before Austin: https://github.com/cemerick/austin/issues/37
+  :profiles {:dev {:dependencies [[com.keminglabs/cljx "0.5.0" :exclusions [org.clojure/clojure]]]
+                   :plugins [[com.keminglabs/cljx "0.5.0" :exclusions [org.clojure/clojure]] ;; Must be before Austin: https://github.com/cemerick/austin/issues/37
                              [com.cemerick/austin "0.1.7-SNAPSHOT"]
                              [com.cemerick/clojurescript.test "0.3.2-SNAPSHOT"]
                              [lein-cljsbuild "1.0.4"]
@@ -51,4 +52,8 @@
                                                                "react/react.js"]
                                                     :externs ["react/externs/react.js"]}}]
                                :test-commands {"phantom" ["phantomjs" :runner "target/test/kioo.js"]}}
-                   :repl-options {:nrepl-middleware [cljx.repl-middleware/wrap-cljx]}}})
+                   :repl-options {:nrepl-middleware [cljx.repl-middleware/wrap-cljx]}
+                   :injections [(require 'cemerick.austin.repls)
+                                (defn browser-repl []
+                                      (cemerick.austin.repls/cljs-repl (reset! cemerick.austin.repls/browser-repl-env
+                                                                               (cemerick.austin/repl-env))))]}})
